@@ -8,8 +8,8 @@ const productRoutes = require('./api/routes/products');
 const orderRoutes = require('./api/routes/orders');
 
 //connect to db
-mongoose.connect('mongodb://node-rest-shop:'+process.env.MONGO_ATLAS_PW+
-'@node-rest-shop-shard-00-00-usfax.mongodb.net:27017,node-rest-shop-shard-00-01-usfax.mongodb.net:27017,node-rest-shop-shard-00-02-usfax.mongodb.net:27017/test?ssl=true&replicaSet=node-rest-shop-shard-0&authSource=admin&retryWrites=true',
+
+mongoose.connect('mongodb+srv://node-rest-shop:'+gg+'@node-rest-shop-usfax.mongodb.net/test?retryWrites=true',
 { useNewUrlParser: true });
 
 app.use(morgan('dev'));
