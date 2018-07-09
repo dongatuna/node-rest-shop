@@ -1,10 +1,17 @@
 const express = require('express');
 const router = express.Router();
+const Order = require('../models/order');
 
 router.get('/', (req, res, next)=>{
-    res.status(200).json({
-        message: 'Orders were fetched'
-    });
+    Orders.find()
+    .exec()
+    .then(orders =>{
+        res.status(200).json({
+            message: 'Orders were fetched'
+        });
+    })
+    .catch();
+   
 });
 
 router.post('/', (req, res, next)=>{

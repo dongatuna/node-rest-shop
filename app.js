@@ -10,6 +10,8 @@ const orderRoutes = require('./api/routes/orders');
 
 //connect to db
 mongoose.connect("mongodb://localhost/transactions");
+
+//mongoose.connect("mongodb+srv://node-rest-shop:"+process.env.MONGO_ATLAS_PW+"@node-rest-shop-usfax.mongodb.net/test?retryWrites=true");
 mongoose.Promise = global.Promise;
 
 app.use(morgan('dev'));
