@@ -9,6 +9,7 @@ const productRoutes = require('./api/routes/products');
 const orderRoutes = require('./api/routes/orders');
 
 //connect to db
+//important line for connecting - "C:\Program Files\MongoDB\Server\4.0\bin\mongod.exe"
 mongoose.connect("mongodb://localhost/transactions");
 
 //mongoose.connect("mongodb+srv://node-rest-shop:"+process.env.MONGO_ATLAS_PW+"@node-rest-shop-usfax.mongodb.net/test?retryWrites=true");

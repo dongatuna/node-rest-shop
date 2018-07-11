@@ -1,6 +1,19 @@
 const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
+const multer = require('multer');
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+
+  filename: (req, file, cb) => {
+    cb(null, new Date().toISOString() + file.originalname);
+  }
+});
+
+const upload = multer({storage: storage});
 
 const Product = require("../models/product");
 
@@ -29,7 +42,9 @@ router.get("/", (req, res, next) => {
           }          
         })
       }
-      res.status(200).json({response});
+
+      res.status(200).json(response);
+
     }else{
       res.status(404).json({
         message: "There are no products at the moment "
@@ -45,7 +60,9 @@ router.get("/", (req, res, next) => {
 
 });
 
-router.post("/", (req, res, next) => {
+router.post("/", upload.single('productImage'), (req, res, next) => {
+
+  console.log(req.file);
   //first, create an instance of the product based on the mongoose Schema
   const product = new Product({
     _id: new mongoose.Types.ObjectId(),
