@@ -4,23 +4,39 @@ const mongoose = require("mongoose");
 const multer = require('multer');
 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/');
+  destination: function(req, file, cb) {
+    cb(null, './uploads/');
   },
-
-  filename: (req, file, cb) => {
-    cb(null, new Date().toISOString() + file.originalname);
+  filename: function(req, file, cb) {
+    cb(null,  new Date().toISOString().replace(/:/g, '-') + file.originalname);
   }
 });
 
-const upload = multer({storage: storage});
+const fileFilter =(req, file, cb)=>{
+  
+  if(file.mimetype==='image/jpeg' || file.mimetype==='image/png'){
+    cb(null, true); //reject a file, ignores and doesn't store the file
+  } else {
+    // cb(null, false);//accept a file
+    cb(new Error('Only accepts png'), false);
+  }  
+}
+
+const upload = multer({
+  storage: storage, 
+  limit:{
+    fileSize: 1024*1024*5
+  },
+  fileFilter:fileFilter
+});
+//const upload = multer({dest: 'uploads/'});
 
 const Product = require("../models/product");
 
 router.get("/", (req, res, next) => {
   Product
   .find()
-  .select("name price _id") //select the fields you want to get
+  .select("name price _id productImage") //select the fields you want to get
   .exec()
   .then(docs=>{
     const count = docs.length;
@@ -33,6 +49,7 @@ router.get("/", (req, res, next) => {
           return{
             name: doc.name,
             price: doc.price,
+            productImage: doc.productImage,
             id: doc._id,
 
             request: {
@@ -67,7 +84,8 @@ router.post("/", upload.single('productImage'), (req, res, next) => {
   const product = new Product({
     _id: new mongoose.Types.ObjectId(),
     name: req.body.name,
-    price: req.body.price
+    price: req.body.price,
+    productImage: req.file.path
   });
 
   product
@@ -79,6 +97,7 @@ router.post("/", upload.single('productImage'), (req, res, next) => {
       createdProduct: {
         name: result.name,
         price: result.price,
+        productImage: result.productImage,
         ID: result._id,
 
         request:{
@@ -101,7 +120,7 @@ router.post("/", upload.single('productImage'), (req, res, next) => {
 router.get("/:productId", (req, res, next) => {
   const id = req.params.productId;
   Product.findById(id)
-  .select('name price _id')
+  .select('name price _id productImage')
   .exec()
   .then(doc => {
     console.log(doc);

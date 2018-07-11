@@ -16,6 +16,8 @@ mongoose.connect("mongodb://localhost/transactions");
 mongoose.Promise = global.Promise;
 
 app.use(morgan('dev'));
+//makes the static folder public
+app.use('/uploads', express.static('uploads'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
