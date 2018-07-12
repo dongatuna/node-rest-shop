@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 
 const productRoutes = require('./api/routes/products');
 const orderRoutes = require('./api/routes/orders');
-
+const userRoutes = require('./api/routes/user');
 //connect to db
 //important line for connecting - "C:\Program Files\MongoDB\Server\4.0\bin\mongod.exe"
 mongoose.connect("mongodb://localhost/transactions");
@@ -43,6 +43,7 @@ app.use((req, res, next)=>{
 //Routes to handle requests
 app.use('/products', productRoutes);
 app.use('/orders', orderRoutes);
+app.use('/user', orderRoutes);
 
 //Error handling
 app.use((req, res, next)=>{
