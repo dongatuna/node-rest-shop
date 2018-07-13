@@ -11,6 +11,7 @@ router.post('/signup', (req, res, next) => {
     User.find({email: req.body.email})
     .exec()
     .then(user =>{
+        
         //if a user exists, return (exit) info to user
         if(user.length>=1){
             return res.status(422).json({
@@ -46,6 +47,56 @@ router.post('/signup', (req, res, next) => {
     })
     
 });
+
+
+
+//create the log in route
+router.post('/login', (req, res, next) => {
+    User.findOne({email:req.body.email})
+    .exec()
+    .then(user =>{
+        //console the results
+        console.log(user);
+        console.log(user.password);
+        if(!user){
+            return res.status(401).json({
+                message:"Auth failed"
+            });
+        }
+        console.log("pass check 1");
+        //if you use user.findOne, the results are not in an array and you can simply 
+        //use user.password? -- console.log to find out
+        bcrypt.compare(req.body.password, user.password, (err, result)=>{
+            //this is returned whten the compare method returns an error for whatever reason
+            console.log("I am here...");
+            console.log(result);
+            console.log(err);
+            if(err){
+                return res.status(401).json({
+                    message:"Auth failed"
+                });
+            }
+
+            if(!result){
+                return res.status(200).json({
+                    message: "Auth successful"
+                });
+            }
+            //this is returned when the password is incorrect
+            res.status(401).json({
+                message:"Auth failed --wrong password"
+            });
+        });
+
+        //
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+  });
 
 router.delete("/:userId", (req, res, next) => {
     User.remove({_id: req.params.userId})
