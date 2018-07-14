@@ -52,13 +52,13 @@ router.post('/signup', (req, res, next) => {
 
 //create the log in route
 router.post('/login', (req, res, next) => {
-    User.findOne({email:req.body.email})
+    User.find({email:req.body.email})
     .exec()
     .then(user =>{
         //console the results
-        console.log(user);
-        console.log(user.password);
-        if(!user){
+        //console.log("This be the user: "+ user);
+        //console.log("Damn password..."+ user.password);
+        if(user.length<1){
             return res.status(401).json({
                 message:"Auth failed"
             });
@@ -77,7 +77,7 @@ router.post('/login', (req, res, next) => {
                 });
             }
 
-            if(!result){
+            if(result){
                 return res.status(200).json({
                     message: "Auth successful"
                 });
@@ -97,6 +97,8 @@ router.post('/login', (req, res, next) => {
         });
     });
   });
+
+//login route
 
 router.delete("/:userId", (req, res, next) => {
     User.remove({_id: req.params.userId})
